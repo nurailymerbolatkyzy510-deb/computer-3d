@@ -1,0 +1,21 @@
+<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width">
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+<style>body{margin:0;overflow:hidden;background:#1a1a1a}canvas{display:block}#t{position:absolute;top:10px;left:10px;color:#fff;font-family:sans-serif;background:#0008;padding:8px;border-radius:8px}</style>
+</head><body><div id="t">Бөлшекті бас - алынады / қайтады</div>
+<script type="module">
+import * as THREE from 'three';
+const scene=new THREE.Scene();const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,0.1,100);camera.position.set(3,2,3);
+const R=new THREE.WebGLRenderer({antialias:true});R.setSize(innerWidth,innerHeight);document.body.appendChild(R.domElement);
+scene.add(new THREE.AmbientLight(0xffffff,1.2));
+const parts=[];function add(g,c,p){const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:c}));m.position.copy(p);m.userData={o:p.clone(),r:false};parts.push(m);scene.add(m);}
+scene.add(new THREE.Mesh(new THREE.BoxGeometry(2.2,2.2,1.1),new THREE.MeshStandardMaterial({color:0x333333,transparent:true,opacity:0.12})));
+add(new THREE.BoxGeometry(1.6,1.2,0.05),0x2e8b57,new THREE.Vector3(0,0,0));
+add(new THREE.BoxGeometry(0.5,0.12,0.05),0x4caf50,new THREE.Vector3(0.4,0.3,0.08));
+add(new THREE.BoxGeometry(0.5,0.12,0.05),0x4caf50,new THREE.Vector3(0.4,0.15,0.08));
+add(new THREE.BoxGeometry(0.2,0.2,0.05),0xffd700,new THREE.Vector3(0,0.3,0.08));
+add(new THREE.BoxGeometry(0.8,0.4,0.6),0x111111,new THREE.Vector3(-0.6,0.7,0));
+add(new THREE.BoxGeometry(1,0.15,0.4),0x1976d2,new THREE.Vector3(0,-0.7,0.1));
+let rot=0;const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();
+addEventListener('click',e=>{mouse.x=(e.clientX/innerWidth)*2-1;mouse.y=-(e.clientY/innerHeight)*2+1;ray.setFromCamera(mouse,camera);const h=ray.intersectObjects(parts);if(h[0]){const p=h[0].object;if(!p.userData.r){p.position.y+=1.5;p.userData.r=true;}else{p.position.copy(p.userData.o);p.userData.r=false;}}});
+(function anim(){requestAnimationFrame(anim);rot+=0.005;camera.position.x=Math.sin(rot)*3.5;camera.position.z=Math.cos(rot)*3.5;camera.lookAt(0,0,0);R.render(scene,camera);})();
+</script></body></html>
